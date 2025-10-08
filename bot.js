@@ -12,14 +12,14 @@ const rangosSalones = {
     edificio: 'Ramon Rivera Lara',
     piso: 1,
     descripcionBase: 'se encuentra en el primer piso, Edificio Ramon Rivera Lara',
-    foto: './maps/mapaB.jpg'
+    foto: 'https://i.postimg.cc/9XbRM9wZ/mapaB.jpg'
   },
   // Rangos automáticos para 200s
   '200-299': {
     edificio: 'Ramon Rivera Lara', 
     piso: 2,
     descripcionBase: 'está en el segundo piso, Edificio Ramon Rivera Lara',
-    foto: './maps/mapaB.jpg'
+    foto: 'https://i.postimg.cc/9XbRM9wZ/mapaB.jpg'
   }
 };
 
@@ -27,47 +27,47 @@ const rangosSalones = {
 const salonesManuales = {
   '301': {
     descripcion: 'El salón 301 se ubica en el segundo piso del edificio de ciencias básicas.',
-    foto: './maps/mapaM.jpg'
+    foto: 'https://i.postimg.cc/Wp8F3Zqr/mapaM.jpg'
   },
   '302': {
     descripcion: 'El salón 302 está en el segundo piso del edificio de ciencias básicas.',
-    foto: './maps/mapaM.jpg'
+    foto: 'https://i.postimg.cc/Wp8F3Zqr/mapaM.jpg'
   },
   '303': {
     descripcion: 'El salón 303 se ubica en el segundo piso del edificio de ciencias básicas.',
-    foto: './maps/mapaM.jpg'
+    foto: 'https://i.postimg.cc/Wp8F3Zqr/mapaM.jpg'
   },
   '304': {
     descripcion: 'El salón 304 está en el segundo piso del edificio de ciencias básicas.',
-    foto: './maps/mapaM.jpg'
+    foto: 'https://i.postimg.cc/Wp8F3Zqr/mapaM.jpg'
   }, 
   '305': {
     descripcion: 'El salón 305 se ubica en el segundo piso del edificio de ciencias básicas.',
-    foto: './maps/mapaM.jpg'
+    foto: 'https://i.postimg.cc/Wp8F3Zqr/mapaM.jpg'
   },
   '306': {
     descripcion: 'El salón 306 está en el segundo piso del edificio de ciencias básicas.',
-    foto: './maps/mapaM.jpg'
+    foto: 'https://i.postimg.cc/Wp8F3Zqr/mapaM.jpg'
   }, 
   '401': {
     descripcion: 'El salón 401 se encuentra en el segundo piso, Edificio P arriba de la sala audiovisual',
-    foto: './maps/mapaP.jpg'
+    foto: 'https://i.postimg.cc/Vsgr6t0q/mapaP.jpg'
   },
   '402': {
     descripcion: 'El salón 402 se encuentra en el segundo piso, Edificio P arriba de la sala audiovisual',
-    foto: './maps/mapaP.jpg'
+    foto: 'https://i.postimg.cc/Vsgr6t0q/mapaP.jpg'
   }, 
   '403': {
     descripcion: 'El salón 403 se encuentra en el segundo piso, Edificio P arriba de la sala audiovisual',
-    foto: './maps/mapaP.jpg'
+    foto: 'https://i.postimg.cc/Vsgr6t0q/mapaP.jpg'
   },
   '404': {
     descripcion: 'El salón 404 se encuentra en el segundo piso, Edificio P arriba de la sala audiovisual',
-    foto: './maps/mapaP.jpg'
+    foto: 'https://i.postimg.cc/Vsgr6t0q/mapaP.jpg'
   },
   '405': {
     descripcion: 'El salón 405 se encuentra en el segundo piso, Edificio P arriba de la sala audiovisual',
-    foto: './maps/mapaP.jpg'
+    foto: 'https://i.postimg.cc/Vsgr6t0q/mapaP.jpg'
   } 
   // Puedes agregar más salones manuales de 300s y 400s aquí...
 };
@@ -225,5 +225,6 @@ bot.on('message', async (msg) => {
     bot.sendMessage(chatId, mensajeError, { parse_mode: 'Markdown' });
   }
 });
+
 
 console.log('🤖 Bot de salones ITCJ - Sistema mixto activo');
