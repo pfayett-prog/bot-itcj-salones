@@ -1,0 +1,15 @@
+{
+  "name": "my-bot-itcj",
+  "version": "1.0.0",
+  "description": "Bot de Telegram para ubicación de salones ITCJ",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "dependencies": {
+    "node-telegram-bot-api": "^0.64.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
