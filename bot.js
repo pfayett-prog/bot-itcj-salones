@@ -6,14 +6,12 @@ const bot = new TelegramBot(token, { polling: true });
 
 // Sistema de rangos para 100s y 200s
 const rangosSalones = {
-  // Rangos automáticos para 100s
   '100-199': {
     edificio: 'Ramon Rivera Lara',
     piso: 1,
     descripcionBase: 'se encuentra en el primer piso, Edificio Ramon Rivera Lara',
     foto: 'https://i.postimg.cc/9XbRM9wZ/mapaB.jpg'
   },
-  // Rangos automáticos para 200s
   '200-299': {
     edificio: 'Ramon Rivera Lara', 
     piso: 2,
@@ -79,12 +77,10 @@ function generarDescripcionAutomatica(numeroSalon, rangoInfo) {
 function obtenerSalon(numeroSalon) {
   const num = parseInt(numeroSalon);
   
-  // Primero verificar si es un salón manual (300s y 400s)
   if (salonesManuales[numeroSalon]) {
     return salonesManuales[numeroSalon];
   }
   
-  // Luego verificar rangos automáticos (100s y 200s)
   if (num >= 100 && num <= 199) {
     const rangoInfo = rangosSalones['100-199'];
     return {
@@ -101,14 +97,13 @@ function obtenerSalon(numeroSalon) {
     };
   }
   
-  return null; // No encontrado
+  return null;
 }
 
 // Comando /start
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
   
-  // Generar lista de salones disponibles automáticamente
   const salones100s = '100-199 (automático)';
   const salones200s = '200-299 (automático)';
   const salonesManualesLista = Object.keys(salonesManuales).join(', ');
@@ -131,60 +126,56 @@ _Escribe el número del salón que buscas:_
   bot.sendMessage(chatId, mensajeBienvenida, { parse_mode: 'Markdown' });
 });
 
-// Comando /info para explicar el sistema
-bot.onText(/\/info/, (msg) => {
-  const chatId = msg.chat.id;
-  const mensajeInfo = `
-ℹ️ *Sistema de salones ITCJ*
-
-🔧 *Rangos automáticos:*
-• *100-199:* Cualquier número en este rango funciona automáticamente
-• *200-299:* Cualquier número en este rango funciona automáticamente
-
-🎯 *Salones manuales:*
-• 301, 302, 303, 304, 305, 306
-• 401, 402, 403, 404, 405
-
-💡 *Ejemplos:*
-• \`101\`, \`150\`, \`199\` → Respuesta automática
-• \`201\`, \`250\`, \`299\` → Respuesta automática  
-• \`305\`, \`401\` → Respuesta manual específica
-  `;
-  bot.sendMessage(chatId, mensajeInfo, { parse_mode: 'Markdown' });
-});
-
-// Manejar mensajes - VERSIÓN CORREGIDA
+// Manejar mensajes - VERSIÓN CON DEBUGGING
 bot.on('message', async (msg) => {
   const chatId = msg.chat.id;
   const textoRecibido = msg.text.trim();
 
   if (textoRecibido.startsWith('/')) return;
 
+  console.log(`🔍 Usuario busca: "${textoRecibido}"`);
+
   const salon = obtenerSalon(textoRecibido);
   
   if (salon) {
     try {
+      console.log(`✅ Salón encontrado:`, salon);
+      
       // Enviar descripción
       await bot.sendMessage(chatId, salon.descripcion);
       
-      // ✅ ENVIAR FOTO DIRECTAMENTE CON LA URL
+      // ✅ INTENTAR ENVIAR FOTO CON MÁS DETALLES DE DEBUG
       if (salon.foto && salon.foto.startsWith('http')) {
-        await bot.sendPhoto(chatId, salon.foto, {
-          caption: `📍 Mapa del salón ${textoRecibido}`
-        });
+        console.log(`🖼️ Intentando enviar foto: ${salon.foto}`);
+        
+        try {
+          await bot.sendPhoto(chatId, salon.foto, {
+            caption: `📍 Mapa del salón ${textoRecibido}`
+          });
+          console.log(`✅ Foto enviada exitosamente para salón ${textoRecibido}`);
+        } catch (photoError) {
+          console.error(`❌ Error enviando foto:`, photoError);
+          await bot.sendMessage(chatId, 
+            `❌ Error al cargar el mapa del salón ${textoRecibido}\n` +
+            `Error: ${photoError.message}`, {
+            parse_mode: 'Markdown'
+          });
+        }
       } else {
+        console.log(`❌ URL de foto inválida: ${salon.foto}`);
         await bot.sendMessage(chatId, 
-          `📍 Mapa del salón ${textoRecibido}:\n(Imagen no disponible)`, {
+          `📍 Mapa del salón ${textoRecibido}:\n(URL de imagen no válida)`, {
           parse_mode: 'Markdown'
         });
       }
       
     } catch (error) {
-      console.error('Error:', error);
+      console.error('💥 Error general:', error);
       await bot.sendMessage(chatId, '✅ Descripción enviada. ❌ Error al cargar el mapa.');
     }
   } else {
-    // Mensaje de error informativo
+    console.log(`❌ Salón no encontrado: "${textoRecibido}"`);
+    
     let mensajeError = `❌ Salón "${textoRecibido}" no encontrado.\n\n`;
     
     const num = parseInt(textoRecibido);
@@ -198,7 +189,6 @@ bot.on('message', async (msg) => {
       }
     }
     
-    // Listar salones disponibles
     const salonesManualesLista = Object.keys(salonesManuales).join(', ');
     mensajeError += `\n\n📋 *Salones manuales disponibles:*\n${salonesManualesLista}`;
     mensajeError += `\n\n🔧 *Rangos automáticos:* 100-199, 200-299`;
@@ -209,11 +199,11 @@ bot.on('message', async (msg) => {
 
 // Manejo de errores
 bot.on('error', (error) => {
-  console.log('Error del bot:', error);
+  console.log('🔴 Error del bot:', error);
 });
 
 bot.on('polling_error', (error) => {
-  console.log('Polling error:', error);
+  console.log('🔴 Polling error:', error);
 });
 
-console.log('🤖 Bot de salones ITCJ - Sistema con URLs funcionando');
+console.log('🤖 Bot de salones ITCJ - Iniciado con debugging');
