@@ -1,9 +1,8 @@
 // Bot de Telegram 
 const TelegramBot = require('node-telegram-bot-api');
-const fs = require('fs');
-const path = require('path');
 
-const token = process.env.BOT_TOKEN || '8161361190:AAGzcDgyOW6FO9JWKyPeZLNLnUQA-sdXTcU';const bot = new TelegramBot(token, { polling: true });
+const token = process.env.BOT_TOKEN || '8161361190:AAGzcDgyOW6FO9JWKyPeZLNLnUQA-sdXTcU';
+const bot = new TelegramBot(token, { polling: true });
 
 // Sistema de rangos para 100s y 200s
 const rangosSalones = {
@@ -23,7 +22,7 @@ const rangosSalones = {
   }
 };
 
-// Salones manuales para 300s y 400s - 
+// Salones manuales para 300s y 400s
 const salonesManuales = {
   '301': {
     descripcion: 'El salón 301 se ubica en el segundo piso del edificio de ciencias básicas.',
@@ -68,8 +67,7 @@ const salonesManuales = {
   '405': {
     descripcion: 'El salón 405 se encuentra en el segundo piso, Edificio P arriba de la sala audiovisual',
     foto: 'https://i.postimg.cc/Vsgr6t0q/mapaP.jpg'
-  } 
-  // Puedes agregar más salones manuales de 300s y 400s aquí...
+  }
 };
 
 // Función para generar descripción automática para rangos
@@ -104,13 +102,6 @@ function obtenerSalon(numeroSalon) {
   }
   
   return null; // No encontrado
-}
-
-// Crear carpeta de maps si no existe
-const mapsDir = './maps';
-if (!fs.existsSync(mapsDir)) {
-  fs.mkdirSync(mapsDir);
-  console.log('📁 Carpeta "maps" creada. Agrega aquí tus mapas: mapaB.jpg, mapaM.jpg, mapaP.jpg');
 }
 
 // Comando /start
@@ -162,7 +153,7 @@ bot.onText(/\/info/, (msg) => {
   bot.sendMessage(chatId, mensajeInfo, { parse_mode: 'Markdown' });
 });
 
-// Manejar mensajes
+// Manejar mensajes - VERSIÓN CORREGIDA
 bot.on('message', async (msg) => {
   const chatId = msg.chat.id;
   const textoRecibido = msg.text.trim();
@@ -176,26 +167,16 @@ bot.on('message', async (msg) => {
       // Enviar descripción
       await bot.sendMessage(chatId, salon.descripcion);
       
-      // Verificar si existe la foto
-      if (fs.existsSync(salon.foto)) {
-        // Enviar foto local
-        const photoStream = fs.createReadStream(salon.foto);
-        await bot.sendPhoto(chatId, photoStream, {
+      // ✅ ENVIAR FOTO DIRECTAMENTE CON LA URL
+      if (salon.foto && salon.foto.startsWith('http')) {
+        await bot.sendPhoto(chatId, salon.foto, {
           caption: `📍 Mapa del salón ${textoRecibido}`
         });
       } else {
         await bot.sendMessage(chatId, 
-          `📸 *Foto del salón ${textoRecibido}:*\n` +
-          `(Archivo no encontrado: ${path.basename(salon.foto)})`, {
+          `📍 Mapa del salón ${textoRecibido}:\n(Imagen no disponible)`, {
           parse_mode: 'Markdown'
         });
-        
-        // Información adicional sobre el archivo faltante
-        if (textoRecibido >= 100 && textoRecibido <= 299) {
-          await bot.sendMessage(chatId,
-            `💡 *Sugerencia:* Agrega el archivo "${path.basename(salon.foto)}" en la carpeta "maps/"`
-          );
-        }
       }
       
     } catch (error) {
@@ -226,5 +207,13 @@ bot.on('message', async (msg) => {
   }
 });
 
+// Manejo de errores
+bot.on('error', (error) => {
+  console.log('Error del bot:', error);
+});
 
-console.log('🤖 Bot de salones ITCJ - Sistema mixto activo');
+bot.on('polling_error', (error) => {
+  console.log('Polling error:', error);
+});
+
+console.log('🤖 Bot de salones ITCJ - Sistema con URLs funcionando');
